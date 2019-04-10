@@ -17,8 +17,17 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.room.Room
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.FirebaseFunctionsException
 import java.util.*
+import com.google.gson.Gson
 
+
+
+class GetWordResponse {
+    val word: String = ""
+}
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private val CHANNEL_ID = "mlt"
@@ -26,6 +35,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     var notificationId = 1
     lateinit var tts: TextToSpeech
     lateinit var db: AppDatabase
+    private lateinit var functions: FirebaseFunctions
 
     override fun onInit(status: Int) {
 
@@ -75,6 +85,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 //        db.clearAllTables()
         db.wordDao().deleteAll()
         db.wordDao().insertAll(Word(1, "dress", "vestido", "robe"), Word(2, "skirt", "falda", "jupe"))
+
+
     }
 
     public override fun onDestroy() {
@@ -83,6 +95,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         super.onDestroy()
     }
 
+    fun newWord(v: View?) {
+        functions = FirebaseFunctions.getInstance("europe-west1")
+        functions
+            .getHttpsCallable("getWord")
+            .call()
+            .continueWith { task ->
+                val response = Gson().fromJson(task.result?.data.toString(), GetWordResponse::class.java)
+                val mEdit:EditText  = findViewById( R.id.editText_talk)
+                mEdit.setText(response.word)
+
+            }
+
+    }
     fun talk(v: View?) {
         val mEdit:EditText  = findViewById( R.id.editText_talk)
         Log.d("MLT_DEBUG", "talk button pressed")
