@@ -9,22 +9,48 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import androidx.room.Room
-import androidx.room.RoomDatabase
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private val CHANNEL_ID = "mlt"
     private val EXTRA_NOTIFICATION_ID = "mlt-snooze"
     var notificationId = 1
+    lateinit var tts: TextToSpeech
     lateinit var db: AppDatabase
 
+    override fun onInit(status: Int) {
+
+        if (status == TextToSpeech.SUCCESS) {
+            Log.i("TTS", "Initialisation ok")
+
+            val result = tts.setLanguage(Locale.US)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported")
+            } else {
+                val talkButton: Button = findViewById( R.id.button_talk)
+                talkButton.setEnabled(true)
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!")
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        tts = TextToSpeech(this, this)
+
+
         setContentView(R.layout.activity_main)
 
         // https://developer.android.com/guide/topics/ui/notifiers/notifications
@@ -49,6 +75,19 @@ class MainActivity : AppCompatActivity() {
 //        db.clearAllTables()
         db.wordDao().deleteAll()
         db.wordDao().insertAll(Word(1, "dress", "vestido", "robe"), Word(2, "skirt", "falda", "jupe"))
+    }
+
+    public override fun onDestroy() {
+        tts.stop()
+        tts.shutdown()
+        super.onDestroy()
+    }
+
+    fun talk(v: View?) {
+        val mEdit:EditText  = findViewById( R.id.editText_talk)
+        Log.d("MLT_DEBUG", "talk button pressed")
+        Log.d("MLT_DEBUG", mEdit.text.toString())
+        tts.speak(mEdit.text.toString(), TextToSpeech.QUEUE_FLUSH, null,"")
     }
 
     fun pressButton(v: View?) {
