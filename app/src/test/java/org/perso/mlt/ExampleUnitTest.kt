@@ -1,4 +1,4 @@
-package org.perso.mlt
+package io.multilanguageteacher.mlt
 
 import org.junit.Test
 

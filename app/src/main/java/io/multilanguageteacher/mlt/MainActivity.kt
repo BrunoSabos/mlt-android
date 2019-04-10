@@ -1,4 +1,4 @@
-package org.perso.mlt
+package io.multilanguageteacher.mlt
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
-        val ACTION_SNOOZE = "org.perso.mlt.snooze"
+        val ACTION_SNOOZE = "io.multilanguageteacher.mlt.snooze"
 
         val MyBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {

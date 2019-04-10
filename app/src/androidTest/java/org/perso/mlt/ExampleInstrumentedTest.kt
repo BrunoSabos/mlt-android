@@ -1,4 +1,4 @@
-package org.perso.mlt
+package io.multilanguageteacher.mlt
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("org.perso.mlt", appContext.packageName)
+        assertEquals("io.multilanguageteacher.mlt", appContext.packageName)
     }
 }
