@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">mlt</string>
+    <string name="channel_name">mlt</string>
+    <string name="channel_description">mychannel</string>
+    <string name="snooze">snooze</string>
 </resources>
